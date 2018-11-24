@@ -32,6 +32,57 @@ public class KauppaTest {
   }
 
   @Test
+  public void aloitaAsiointiNollaaEdellisenOstoksenTiedot() {
+    kauppa.aloitaAsiointi();
+    kauppa.lisaaKoriin(1);
+    kauppa.lisaaKoriin(2);
+    kauppa.lisaaKoriin(2);
+
+    kauppa.aloitaAsiointi();
+    kauppa.lisaaKoriin(2);
+    kauppa.tilimaksu(ASIAKAS, TILINUMERO);
+
+    verify(pankki).tilisiirto(
+      eq(ASIAKAS),
+      eq(VIITENUMERO),
+      eq(TILINUMERO),
+      anyString(),
+      eq(8)
+    );
+  }
+
+  @Test
+  public void kauppaPyytaaUudenViitenumeronJokaMaksutapahtumalle() {
+    kauppa.aloitaAsiointi();
+    kauppa.lisaaKoriin(1);
+    kauppa.tilimaksu(ASIAKAS, TILINUMERO);
+
+    kauppa.aloitaAsiointi();
+    kauppa.lisaaKoriin(2);
+    kauppa.tilimaksu(ASIAKAS, TILINUMERO);
+
+    verify(viite, times(2)).uusi();
+  }
+
+  @Test
+  public void tuotteenPoistaminenOstoskoristaOnnistuu() {
+    kauppa.aloitaAsiointi();
+    kauppa.lisaaKoriin(1);
+    kauppa.lisaaKoriin(2);
+    kauppa.lisaaKoriin(2);
+    kauppa.poistaKorista(2);
+    kauppa.tilimaksu(ASIAKAS, TILINUMERO);
+
+    verify(pankki).tilisiirto(
+      eq(ASIAKAS),
+      eq(VIITENUMERO),
+      eq(TILINUMERO),
+      anyString(),
+      eq(13)
+    );
+  }
+
+  @Test
   public void yhdenTuotteenOstamisenJalkeenPankinMetodiaTilisiirtoKutsutaanOikein() {
     kauppa.aloitaAsiointi();
     kauppa.lisaaKoriin(1);
