@@ -13,15 +13,15 @@ public class Kauppa {
     }
 
 
-    public void aloitaOstokset(){
+    public void aloitaOstokset() {
         yhteishinta = 0;
     }
     
-    public void lisaaOstos(int hinta){
+    public void lisaaOstos(int hinta) {
         yhteishinta += hinta;
     }
     
-    public void maksa(String tilinumero){
-        pankki.maksa(tilinumero, yhteishinta, viitegeneraattori.seruaava());
+    public void maksa(String tilinumero) {
+        pankki.maksa(tilinumero, yhteishinta, viitegeneraattori.seuraava());
     }
 }
